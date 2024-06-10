@@ -276,17 +276,17 @@ std::tuple<std::string, std::string, std::string> Preprocess::get_topics(const b
 
       if (type.find("CameraInfo") != std::string::npos) {
         if (!camera_info_topic.empty()) {
-          std::cerr << vlcal::console::bold_yellow << "warning: bag constains multiple camera_info topics!!" << vlcal::console::reset << std::endl;
+          std::cerr << vlcal::console::bold_yellow << "warning: bag contains multiple camera_info topics!!" << vlcal::console::reset << std::endl;
         }
         camera_info_topic = topic;
       } else if (type.find("Image") != std::string::npos) {
         if (!image_topic.empty()) {
-          std::cerr << vlcal::console::bold_yellow << "warning: bag constains multiple image topics!!" << vlcal::console::reset << std::endl;
+          std::cerr << vlcal::console::bold_yellow << "warning: bag contains multiple image topics!!" << vlcal::console::reset << std::endl;
         }
         image_topic = topic;
       } else if (type.find("PointCloud2") != std::string::npos) {
         if (!points_topic.empty()) {
-          std::cerr << vlcal::console::bold_yellow << "warning: bag constains multiple points topics!!" << vlcal::console::reset << std::endl;
+          std::cerr << vlcal::console::bold_yellow << "warning: bag contains multiple points topics!!" << vlcal::console::reset << std::endl;
         }
         points_topic = topic;
       }

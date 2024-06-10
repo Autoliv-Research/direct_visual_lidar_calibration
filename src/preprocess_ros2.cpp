@@ -19,7 +19,11 @@ namespace vlcal {
 class PointCloudReaderROS2 : public PointCloudReader {
 public:
   PointCloudReaderROS2(const std::string& bag_filename, const std::string& points_topic, const std::string& intensity_channel) : intensity_channel(intensity_channel) {
-    reader.open(bag_filename);
+    rosbag2_storage::StorageOptions options;
+    options.uri = bag_filename;   
+    options.storage_id = "";
+
+    reader.open(options);
 
     rosbag2_storage::StorageFilter filter;
     filter.topics.push_back(points_topic);
@@ -52,7 +56,10 @@ protected:
   template <typename T>
   std::shared_ptr<T> get_first_message(const std::string& bag_filename, const std::string& topic) const {
     rosbag2_cpp::Reader reader;
-    reader.open(bag_filename);
+    rosbag2_storage::StorageOptions options;
+    options.uri = bag_filename;   
+    options.storage_id = "";
+    reader.open(options);
 
     rosbag2_storage::StorageFilter filter;
     filter.topics.emplace_back(topic);
@@ -77,7 +84,10 @@ protected:
   virtual bool valid_bag(const std::string& bag_filename) override {
     try {
       rosbag2_cpp::Reader reader;
-      reader.open(bag_filename);
+      rosbag2_storage::StorageOptions options;
+      options.uri = bag_filename;   
+      options.storage_id = "";
+      reader.open(options);
     } catch (std::exception& e) {
       return false;
     }
@@ -87,7 +97,10 @@ protected:
 
   virtual std::vector<std::pair<std::string, std::string>> get_topics_and_types(const std::string& bag_filename) override {
     rosbag2_cpp::Reader reader;
-    reader.open(bag_filename);
+    rosbag2_storage::StorageOptions options;
+    options.uri = bag_filename;   
+    options.storage_id = "";
+    reader.open(options);
     std::vector<std::pair<std::string, std::string>> topics_and_types;
     for (const auto& topic_metadata : reader.get_all_topics_and_types()) {
       topics_and_types.emplace_back(topic_metadata.name, topic_metadata.type);
@@ -104,7 +117,17 @@ protected:
   }
 
   virtual cv::Size get_image_size(const std::string& bag_filename, const std::string& image_topic) override {
-    if (image_topic.find("compressed") == std::string::npos) {
+
+    const auto topics_and_types = get_topics_and_types(bag_filename);
+    std::string image_type;
+    for (const auto& [topic, type] : topics_and_types) {
+      if (topic == image_topic){
+        image_type = type;
+        break;
+      }
+    }
+
+    if (image_type.find("CompressedImage") == std::string::npos) {
       const auto image_msg = get_first_message<sensor_msgs::msg::Image>(bag_filename, image_topic);
       return cv::Size(image_msg->width, image_msg->height);
     }
@@ -126,7 +149,17 @@ protected:
   }
 
   virtual cv::Mat get_image(const std::string& bag_filename, const std::string& image_topic) override {
-    if (image_topic.find("compressed") == std::string::npos) {
+
+    const auto topics_and_types = get_topics_and_types(bag_filename);
+    std::string image_type;
+    for (const auto& [topic, type] : topics_and_types) {
+      if (topic == image_topic){
+        image_type = type;
+        break;
+      }
+    }
+
+    if (image_type.find("CompressedImage") == std::string::npos) {
       const auto image_msg = get_first_message<sensor_msgs::msg::Image>(bag_filename, image_topic);
       return cv_bridge::toCvCopy(*image_msg, "mono8")->image;
     }
