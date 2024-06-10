@@ -42,7 +42,7 @@
     }
   },
   "mounts": [
-    "source=/projects/MicroVision/Pilot,target=/data,type=bind,consistency=cached"
+    "source=/path/to/your/bags,target=/data,type=bind,consistency=cached"
   ],
   // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "devcontainer"

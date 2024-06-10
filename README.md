@@ -1,3 +1,8 @@
+## Small changes done by Autoliv Research
+
+- Add devcontainer to be able to work with VSCode in a dev container: Rename `.devcontainer/devcontainer_template.json` to `.devcontainer/devcontainer.json` and don't forget to mount your data path.
+- In the ROS2 `preprocess` node, we use the topic type instead of the topic name to differentiate Images to CompressedImages.
+
 # direct_visual_lidar_calibration
 
 This package provides a toolbox for LiDAR-camera calibration that is: 
